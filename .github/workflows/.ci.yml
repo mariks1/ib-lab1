@@ -2,11 +2,25 @@ name: CI
 
 on:
   push:
-  pull_request:
 
 jobs:
   build-test-scan:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: lab1
+          POSTGRES_USER: lab
+          POSTGRES_PASSWORD: lab
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U lab -d lab1"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=20
 
     steps:
       - name: Checkout
@@ -19,11 +33,23 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Set JWT secret
-        run: echo "JWT_SIGNING_KEY=$(openssl rand -base64 32)" >> $GITHUB_ENV
+      - name: Export env for Spring (DB & JWT)
+        run: |
+          echo "DB_URL=jdbc:postgresql://localhost:5432/lab1" >> $GITHUB_ENV
+          echo "DB_USER=lab" >> $GITHUB_ENV
+          echo "DB_PASS=lab" >> $GITHUB_ENV
+          echo "JWT_SIGNING_KEY=$(openssl rand -base64 32)" >> $GITHUB_ENV
 
-      - name: Build & Test & Security Scans
-        run: mvn -B verify org.owasp:dependency-check-maven:check
+      - name: Cache Dependency-Check data
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: depcheck-${{ runner.os }}-v1
+
+      - name: Build, Test, Security Scans
+        run: |
+          mvn -B verify org.owasp:dependency-check-maven:check \
+            -Dnvd.nist.cveValidForHours=168
 
       - name: Upload SpotBugs report (XML)
         uses: actions/upload-artifact@v4
@@ -39,4 +65,5 @@ jobs:
           path: |
             target/dependency-check-report.html
             target/dependency-check-report.json
+            target/dependency-check-report.xml
           if-no-files-found: warn
