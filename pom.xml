@@ -101,8 +101,8 @@
             </plugin>
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs</artifactId>
-                <version>4.9.6</version>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.9.6.0</version>
                 <executions>
                     <execution>
                         <phase>verify</phase>
@@ -132,7 +132,6 @@
                     <format>ALL</format>
                     <failBuildOnCVSS>0</failBuildOnCVSS>
                     <skipTestScope>false</skipTestScope>
-                    <suppressionFile>dependency-check-suppressions.xml</suppressionFile>
                 </configuration>
             </plugin>
         </plugins>
