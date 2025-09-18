@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Set JWT secret
+        run: echo "JWT_SIGNING_KEY=$(openssl rand -base64 32)" >> $GITHUB_ENV
+
+      - name: Build & Test & Security Scans
+        run: mvn -B verify org.owasp:dependency-check-maven:check
+
+      - name: Upload SpotBugs report (XML)
+        uses: actions/upload-artifact@v4
+        with:
+          name: spotbugs-xml
+          path: target/spotbugsXml.xml
+          if-no-files-found: ignore
+
+      - name: Upload Dependency-Check reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-reports
+          path: |
+            target/dependency-check-report.html
+            target/dependency-check-report.json
+          if-no-files-found: warn
