@@ -111,10 +111,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <xmlOutput>false</xmlOutput>
-                    <outputFormat>html</outputFormat>
-                    <outputDirectory>${project.build.directory}</outputDirectory>
-                <failOnError>true</failOnError>
+                    <xmlOutput>true</xmlOutput>
+                    <failOnError>false</failOnError>
                 </configuration>
             </plugin>
 

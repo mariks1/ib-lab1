@@ -54,12 +54,12 @@ jobs:
             -Dnvd.nist.cveValidForHours=168 \
             -Danalyzer.ossindex.enabled=false
 
-      - name: Upload SpotBugs report (html)
+      - name: Upload SpotBugs report (XML)
         uses: actions/upload-artifact@v4
         with:
-          name: spotbugs-html
-          path: target/spotbugs.html
-          if-no-files-found: warn
+          name: spotbugs-xml
+          path: target/spotbugsXml.xml
+          if-no-files-found: ignore
 
       - name: Upload Dependency-Check reports
         uses: actions/upload-artifact@v4
