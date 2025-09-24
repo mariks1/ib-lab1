@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Value;
 
 @Value
-public class SignInRequestDTO {
+public class RegisterRequestDTO {
     @NotBlank
     String username;
     @NotBlank

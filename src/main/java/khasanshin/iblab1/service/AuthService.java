@@ -2,13 +2,15 @@ package khasanshin.iblab1.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import khasanshin.iblab1.dto.JwtAuthenticationResponseDTO;
-import khasanshin.iblab1.dto.SignInRequestDTO;
-import khasanshin.iblab1.dto.SignUpRequestDTO;
+import khasanshin.iblab1.dto.LoginRequestDTO;
+import khasanshin.iblab1.dto.RegisterRequestDTO;
 import khasanshin.iblab1.entity.User;
 import khasanshin.iblab1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class AuthService {
 
 
     @Transactional
-    public JwtAuthenticationResponseDTO signUp(SignUpRequestDTO request) {
+    public JwtAuthenticationResponseDTO register(RegisterRequestDTO request) {
 
         userRepository.findByUsername(request.getUsername()).ifPresent(u -> {
             throw new IllegalArgumentException("Пользователь с таким именем уже существует");
@@ -44,10 +46,14 @@ public class AuthService {
         return new JwtAuthenticationResponseDTO(jwt);
     }
 
-    public JwtAuthenticationResponseDTO signIn(SignInRequestDTO request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
+    public JwtAuthenticationResponseDTO login(LoginRequestDTO request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            );
+        } catch (AuthenticationException ex) {
+            throw new BadCredentialsException(ex.getMessage());
+        }
 
         userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
