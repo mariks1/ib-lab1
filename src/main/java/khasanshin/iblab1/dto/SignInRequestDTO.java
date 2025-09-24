@@ -1,9 +1,13 @@
 package khasanshin.iblab1.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Value;
 
-public record SignInRequestDTO(
-        @NotBlank String username,
-        @NotBlank String password
-) {}
+@Value
+public class SignInRequestDTO {
+    @NotBlank
+    String username;
+    @NotBlank
+    String password;
+}
 

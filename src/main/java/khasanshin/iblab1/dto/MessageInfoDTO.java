@@ -1,3 +1,8 @@
 package khasanshin.iblab1.dto;
 
-public record MessageInfoDTO(String message) {}
+import lombok.Value;
+
+@Value
+public class MessageInfoDTO {
+    String message;
+}

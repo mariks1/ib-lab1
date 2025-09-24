@@ -12,3 +12,21 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    restart: unless-stopped
+
+  app:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/lab1
+      DB_USER: lab
+      DB_PASS: lab
+      JWT_SIGNING_KEY: ${JWT_SIGNING_KEY}
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  pg_data:

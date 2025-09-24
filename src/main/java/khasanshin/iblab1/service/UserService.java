@@ -1,7 +1,7 @@
 package khasanshin.iblab1.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import khasanshin.iblab1.entity.UserEntity;
+import khasanshin.iblab1.entity.User;
 import khasanshin.iblab1.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,13 +17,13 @@ public class UserService {
 
 
     @Transactional(readOnly = true)
-    public UserEntity getByUsername(String username) {
+    public User getByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void create(UserEntity user) {
+    public void create(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new EntityNotFoundException("Пользователь с таким именем уже существует");
         }
@@ -32,13 +32,13 @@ public class UserService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void save(UserEntity user) {
+    public void save(User user) {
         userRepository.save(user);
     }
 
     public UserDetailsService userDetailsService() {
         return username -> {
-            UserEntity u = getByUsername(username);
+            User u = getByUsername(username);
             return new org.springframework.security.core.userdetails.User(
                     u.getUsername(),
                     u.getPassword(),

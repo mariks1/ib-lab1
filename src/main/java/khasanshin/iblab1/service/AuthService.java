@@ -4,7 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import khasanshin.iblab1.dto.JwtAuthenticationResponseDTO;
 import khasanshin.iblab1.dto.SignInRequestDTO;
 import khasanshin.iblab1.dto.SignUpRequestDTO;
-import khasanshin.iblab1.entity.UserEntity;
+import khasanshin.iblab1.entity.User;
 import khasanshin.iblab1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,13 +27,13 @@ public class AuthService {
     @Transactional
     public JwtAuthenticationResponseDTO signUp(SignUpRequestDTO request) {
 
-        userRepository.findByUsername(request.username()).ifPresent(u -> {
+        userRepository.findByUsername(request.getUsername()).ifPresent(u -> {
             throw new IllegalArgumentException("Пользователь с таким именем уже существует");
         });
 
-        UserEntity user = UserEntity.builder()
-                .username(request.username())
-                .password(passwordEncoder.encode(request.password()))
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
         userService.create(user);
@@ -46,13 +46,13 @@ public class AuthService {
 
     public JwtAuthenticationResponseDTO signIn(SignInRequestDTO request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.username(), request.password())
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        userRepository.findByUsername(request.username())
+        userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
 
-        var userDetails = userService.userDetailsService().loadUserByUsername(request.username());
+        var userDetails = userService.userDetailsService().loadUserByUsername(request.getUsername());
         String jwt = jwtService.generateToken(userDetails);
 
         return new JwtAuthenticationResponseDTO(jwt);

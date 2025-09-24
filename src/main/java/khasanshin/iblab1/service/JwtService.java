@@ -3,7 +3,7 @@ package khasanshin.iblab1.service;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import khasanshin.iblab1.entity.UserEntity;
+import khasanshin.iblab1.entity.User;
 import khasanshin.iblab1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +31,7 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
 
-        UserEntity user = userRepository.findByUsername(userDetails.getUsername())
+        User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow();
 
         Map<String, Object> extraClaims = Map.of("id", user.getId());

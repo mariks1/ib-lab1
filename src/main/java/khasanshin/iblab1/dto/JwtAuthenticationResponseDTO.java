@@ -1,3 +1,8 @@
 package khasanshin.iblab1.dto;
 
-public record JwtAuthenticationResponseDTO(String token) {}
+import lombok.Value;
+
+@Value
+public class JwtAuthenticationResponseDTO {
+    String token;
+}
