@@ -103,3 +103,4 @@ GET /api/data/{id}/render      -> text/html (экранированный title/
 ## Скриншоты отчетов SAST/SCA из раздела "Actions" / "CI/CD"
 
 ![img.png](img.png)
+![img_1.png](img_1.png)

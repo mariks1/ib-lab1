@@ -4,7 +4,7 @@ on:
   push:
     paths-ignore:
       - 'README.md'
-
+      - 'img_1.png'
 jobs:
   build-test-scan:
     runs-on: ubuntu-latest
