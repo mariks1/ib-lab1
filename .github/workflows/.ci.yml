@@ -2,6 +2,8 @@ name: CI
 
 on:
   push:
+    paths-ignore:
+      - 'README.md'
 
 jobs:
   build-test-scan:
@@ -52,11 +54,11 @@ jobs:
             -Dnvd.nist.cveValidForHours=168 \
             -Danalyzer.ossindex.enabled=false
 
-      - name: Upload SpotBugs report (XML)
+      - name: Upload SpotBugs report (html)
         uses: actions/upload-artifact@v4
         with:
-          name: spotbugs-xml
-          path: target/spotbugsXml.xml
+          name: spotbugs-html
+          path: target/spotbugsHtml.html
           if-no-files-found: ignore
 
       - name: Upload Dependency-Check reports

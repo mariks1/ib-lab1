@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 @RestController @RequestMapping("/api/data") @RequiredArgsConstructor
@@ -49,21 +50,23 @@ public class TaskController {
         String safeTitle = HtmlUtils.htmlEscape(dto.getTitle());
         String safeDesc = HtmlUtils.htmlEscape(dto.getDescription() == null ? "" : dto.getDescription());
 
-        String html = String.format("""
+        String template = """
         <!doctype html>
         <html lang="en">
           <head>
             <meta charset="utf-8">
-            <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+            <meta http-equiv="Content-Security-Policy"
+                  content="default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
             <title>Task Preview</title>
           </head>
           <body>
-            <h2>%s</h2>
-            <p>%s</p>
+            <h2>{0}</h2>
+            <p>{1}</p>
           </body>
         </html>
-        """, safeTitle, safeDesc);
+        """;
 
+        String html = MessageFormat.format(template, safeTitle, safeDesc);
 
         return ResponseEntity.ok().contentType(MediaType.TEXT_HTML).body(html);
     }

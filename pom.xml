@@ -111,8 +111,9 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <xmlOutput>true</xmlOutput>
-                    <failOnError>false</failOnError>
+                    <xmlOutput>false</xmlOutput>
+                    <outputFormat>html</outputFormat>
+                    <failOnError>true</failOnError>
                 </configuration>
             </plugin>
 

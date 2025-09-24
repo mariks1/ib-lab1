@@ -9,7 +9,7 @@
 - [API](#api)
 - [Подробно о мерах защиты](#подробно-о-мерах-защиты)
 - [CI/CD и отчёты безопасности](#cicd-и-отчёты-безопасности)
-
+- [Скриншоты отчетов SAST/SCAСкриншоты отчетов SAST/SCA из раздела "Actions" / "CI/CD"](#cкриншоты отчетов SAST/SCA из раздела "Actions" / "CI/CD")
 ---
 
 ## Стек
@@ -79,10 +79,9 @@ GET /api/data/{id}/render      -> text/html (экранированный title/
 - Остальные эндпоинты — требуется `Authorization: Bearer <token>`.
 
 ### Защита от XSS
-- Ответы API — JSON.
+- Ответы API — JSON, автоматически экранируются при помощи `JacksonHtmlEscapeConfig`
 - Для демонстрации XSS есть HTML-рендер `/api/data/{id}/render`:
-    - Экранирование пользовательского ввода через **OWASP Java Encoder** (`Encode.forHtmlContent`).
-    - CSP в HTML-странице: `default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'`.
+    - Экранирование пользовательского ввода через **Spring** (`HtmlUtils.htmlEscape`).
 
 ### Защита от SQLi
 - Spring Data JPA (параметризованные запросы), без конкатенации SQL.
@@ -94,10 +93,13 @@ GET /api/data/{id}/render      -> text/html (экранированный title/
 
 ## CI/CD и отчёты безопасности
 
-- GitHub Actions запускается на каждый push.
+- GitHub Actions запускается на каждый push (кроме изменений в README.md).
 - Поднимается сервис PostgreSQL.
 - SAST: SpotBugs (`target/spotbugsXml.xml`).
 - SCA: OWASP Dependency-Check (`target/dependency-check-report.html|json|xml`).
 
 Артефакты с отчётами доступны в разделе Actions → Artifacts.
 
+## Скриншоты отчетов SAST/SCA из раздела "Actions" / "CI/CD"
+
+![img.png](img.png)
